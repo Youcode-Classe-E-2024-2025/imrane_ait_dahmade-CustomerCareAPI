@@ -33,17 +33,17 @@ class User extends Authenticatable
 
     public function tickets()
     {
-        return $this->hasMany(Ticket::class, 'user_id');
+        return $this->hasMany(Tickets::class, 'user_id');
     }
 
     public function assignedTickets()
     {
-        return $this->hasMany(Ticket::class, 'agent_id');
+        return $this->hasMany(Tickets::class, 'agent_id');
     }
 
     public function responses()
     {
-        return $this->hasMany(Response::class);
+        return $this->hasMany(Responses::class);
     }
 
     public function isAdmin()

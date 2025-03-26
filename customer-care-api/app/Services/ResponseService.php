@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Response;
-use App\Models\Ticket;
+use App\Models\Responses;
+use App\Models\Tickets;
 use Illuminate\Database\Eloquent\Collection;
 
 class ResponseService
@@ -17,7 +17,7 @@ class ResponseService
      */
     public function getTicketResponses(int $ticketId, bool $includeInternal = false): Collection
     {
-        $query = Response::with('user')
+        $query = Responses::with('user')
             ->where('ticket_id', $ticketId);
             
         if (!$includeInternal) {
@@ -31,15 +31,15 @@ class ResponseService
      * Create a new response
      *
      * @param array $data
-     * @return Response
+     * @return Responses
      */
-    public function createResponse(array $data): Response
+    public function createResponse(array $data): Responses
     {
-        $response = Response::create($data);
+        $response = Responses::create($data);
         
         // Update ticket status if needed
         if (!$data['is_internal']) {
-            $ticket = Ticket::findOrFail($data['ticket_id']);
+            $ticket = Tickets::findOrFail($data['ticket_id']);
             
             // If customer is responding to a resolved ticket, reopen it
             if ($ticket->status === 'resolved' && $response->user->role === 'customer') {
@@ -62,11 +62,11 @@ class ResponseService
      *
      * @param int $responseId
      * @param array $data
-     * @return Response
+     * @return Responses
      */
-    public function updateResponse(int $responseId, array $data): Response
+    public function updateResponse(int $responseId, array $data): Responses
     {
-        $response = Response::findOrFail($responseId);
+        $response = Responses::findOrFail($responseId);
         $response->update($data);
         return $response->fresh();
     }
@@ -79,7 +79,7 @@ class ResponseService
      */
     public function deleteResponse(int $responseId): bool
     {
-        $response = Response::findOrFail($responseId);
+        $response = Responses::findOrFail($responseId);
         return $response->delete();
     }
 }

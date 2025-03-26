@@ -21,3 +21,4 @@ return new class extends Migration
             $table->dropColumn(['role', 'phone', 'is_active']);
         });
     }
+};

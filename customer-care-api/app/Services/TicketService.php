@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Ticket;
+use App\Models\Tickets;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -18,7 +18,7 @@ class TicketService
      */
     public function getAllTickets(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = Ticket::with(['user', 'agent', 'responses']);
+        $query = Tickets::with(['user', 'agent', 'responses']);
 
         // Apply filters
         if (isset($filters['status'])) {
@@ -59,7 +59,7 @@ class TicketService
      */
     public function getUserTickets(int $userId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = Ticket::with(['user', 'agent', 'responses'])
+        $query = Tickets::with(['user', 'agent', 'responses'])
             ->where('user_id', $userId);
 
         // Apply filters
@@ -89,7 +89,7 @@ class TicketService
      */
     public function getAgentTickets(int $agentId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = Ticket::with(['user', 'agent', 'responses'])
+        $query = Tickets::with(['user', 'agent', 'responses'])
             ->where('agent_id', $agentId);
 
         // Apply filters
@@ -113,22 +113,22 @@ class TicketService
      * Get a specific ticket by ID
      *
      * @param int $ticketId
-     * @return Ticket
+     * @return Tickets
      */
-    public function getTicketById(int $ticketId): Ticket
+    public function getTicketById(int $ticketId): Tickets
     {
-        return Ticket::with(['user', 'agent', 'responses.user'])->findOrFail($ticketId);
+        return Tickets::with(['user', 'agent', 'responses.user'])->findOrFail($ticketId);
     }
 
     /**
      * Create a new ticket
      *
      * @param array $data
-     * @return Ticket
+     * @return Tickets
      */
-    public function createTicket(array $data): Ticket
+    public function createTicket(array $data): Tickets
     {
-        return Ticket::create($data);
+        return Tickets::create($data);
     }
 
     /**
@@ -136,11 +136,11 @@ class TicketService
      *
      * @param int $ticketId
      * @param array $data
-     * @return Ticket
+     * @return Tickets
      */
-    public function updateTicket(int $ticketId, array $data): Ticket
+    public function updateTicket(int $ticketId, array $data): Tickets
     {
-        $ticket = Ticket::findOrFail($ticketId);
+        $ticket = Tickets::findOrFail($ticketId);
         $ticket->update($data);
         return $ticket->fresh();
     }
@@ -150,11 +150,11 @@ class TicketService
      *
      * @param int $ticketId
      * @param int $agentId
-     * @return Ticket
+     * @return Tickets
      */
-    public function assignTicket(int $ticketId, int $agentId): Ticket
+    public function assignTicket(int $ticketId, int $agentId): Tickets
     {
-        $ticket = Ticket::findOrFail($ticketId);
+        $ticket = Tickets::findOrFail($ticketId);
         $agent = User::findOrFail($agentId);
         
         // Check if user is an agent
@@ -174,9 +174,9 @@ class TicketService
      *
      * @param int $ticketId
      * @param string $status
-     * @return Ticket
+     * @return Tickets
      */
-    public function changeStatus(int $ticketId, string $status): Ticket
+    public function changeStatus(int $ticketId, string $status): Tickets
     {
         $validStatuses = ['open', 'in_progress', 'resolved', 'closed'];
         
@@ -184,7 +184,7 @@ class TicketService
             throw new \Exception('Invalid status');
         }
         
-        $ticket = Ticket::findOrFail($ticketId);
+        $ticket = Tickets::findOrFail($ticketId);
         $ticket->status = $status;
         $ticket->save();
         
@@ -199,7 +199,7 @@ class TicketService
      */
     public function deleteTicket(int $ticketId): bool
     {
-        $ticket = Ticket::findOrFail($ticketId);
+        $ticket = Tickets::findOrFail($ticketId);
         return $ticket->delete();
     }
 }
