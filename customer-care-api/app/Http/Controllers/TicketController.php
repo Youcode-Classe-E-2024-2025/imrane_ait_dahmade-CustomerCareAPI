@@ -38,7 +38,7 @@ class TicketController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return $this->ticketService->getTicketById($id);
     }
 
     /**
@@ -46,7 +46,15 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+           // Valider les données de la requête
+        $request=   $request->validate([
+            'title' => 'required|min:6',
+            'description' => 'required|max:255',
+            'status' => 'required|in:open,in_progress,resolved,closed', // Statut valide
+            'priority' => 'required|in:low,medium,high,urgent', // Priorité valide
+            'category' => 'required|string',
+        ]);
+        return $this->ticketService->updateTicket($id,$request);
     }
 
     /**
