@@ -16,36 +16,10 @@ class TicketService
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function getAllTickets(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function getAllTickets( int $perPage = 15): LengthAwarePaginator
     {
-        $query = Tickets::with(['user', 'agent', 'responses']);
-
-        // Apply filters
-        if (isset($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
-
-        if (isset($filters['priority'])) {
-            $query->where('priority', $filters['priority']);
-        }
-
-        if (isset($filters['category'])) {
-            $query->where('category', $filters['category']);
-        }
-
-        if (isset($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // Apply sorting
-        $sortField = $filters['sort_by'] ?? 'created_at';
-        $sortDirection = $filters['sort_direction'] ?? 'desc';
-        $query->orderBy($sortField, $sortDirection);
-
+        $query = Tickets::all();
+        dd($query);
         return $query->paginate($perPage);
     }
 
@@ -87,6 +61,7 @@ class TicketService
      * @param int $perPage
      * @return LengthAwarePaginator
      */
+
     public function getAgentTickets(int $agentId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Tickets::with(['user', 'agent', 'responses'])
@@ -96,7 +71,7 @@ class TicketService
         if (isset($filters['status'])) {
             $query->where('status', $filters['status']);
         }
-
+        
         if (isset($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
